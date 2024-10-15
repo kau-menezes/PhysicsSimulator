@@ -27,7 +27,7 @@ public class Mass {
       this.diameter = diameter;
     }
 
-    public void FreeFall(Double gravity, Double MaxWidth, Double MaxHeight) {
+    public void Movement(Double gravity, Double MaxWidth, Double MaxHeight) {
        
       this.yVelocity += gravity * 0.04f;
 
@@ -39,6 +39,14 @@ public class Mass {
         var passou = this.yPosition - (MaxHeight - this.diameter);
         
         this.yPosition -= passou;
+        this.yVelocity *= - k;
+      }
+      
+      if (this.yPosition <= 0) { 
+        
+        var passou = this.yPosition + (MaxHeight - this.diameter);
+        
+        this.yPosition += passou;
         this.yVelocity *= - k;
       }
 
@@ -56,6 +64,8 @@ public class Mass {
         this.xPosition -= passou;
         this.xVelocity *= - k;
       }
+
+      
     }
 
 }

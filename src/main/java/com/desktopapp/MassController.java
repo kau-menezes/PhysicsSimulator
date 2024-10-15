@@ -24,11 +24,22 @@ public class MassController implements Initializable {
         Parent root = loader.load();
         Scene scene = new Scene(root);
         
+        
+        Timer timer = new Timer(); 
+        MassController controller = loader.getController();
+        
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                controller.canvas.setWidth(scene.getWidth());
+                controller.canvas.setHeight(scene.getHeight());
+            }
+            
+        }, 0, 55);
+        
         return scene;
     }
 
-
-    
     @FXML
     private Canvas canvas;
     
@@ -39,10 +50,7 @@ public class MassController implements Initializable {
     GraphicsContext g;
 
 
-    
     protected void renderBall(ArrayList<Mass> bolinhas) {
-
-        g.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         for (Mass ball : bolinhas) {
             
@@ -50,37 +58,26 @@ public class MassController implements Initializable {
 
             g.fillOval(ball.xPosition, ball.yPosition, ball.diameter, ball.diameter);
 
-            ball.FreeFall(200.0, canvas.getWidth(), canvas.getHeight());
+            ball.Movement(200.0, canvas.getWidth(), canvas.getHeight());
             
         }
 
-        vbox.requestLayout();
     }
 
 
-
-
-
     protected void renderSpring(ArrayList<Spring> molinhas) {
+        
 
         for (Spring spring : molinhas) {
             
-            
-            Double force = spring.SpringForce();
-            
-            System.out.println(force);
+            ArrayList<Double> forces = spring.SpringForce();
 
-            // Color newColor = new Color(
-            //     (force) / 1000,
-            //     0f,
-            //     0f,
-            //     1
-            // );
-                
-            // g.setFill(newColor);
-                
-                
-                
+            spring.mass1.xVelocity -= forces.get(0) / spring.mass1.mass;
+            spring.mass1.yVelocity -= forces.get(1) / spring.mass1.mass;
+
+            spring.mass2.xVelocity += forces.get(0) / spring.mass2.mass;
+            spring.mass2.yVelocity += forces.get(1) / spring.mass2.mass;
+                            
                 
             g.strokeLine(
                 spring.mass1.xPosition + spring.mass1.diameter/2,
@@ -91,38 +88,48 @@ public class MassController implements Initializable {
             
         }
 
-        vbox.requestLayout();
     }
 
 
-    
+     
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
+
         this.g = canvas.getGraphicsContext2D();
+
         ArrayList<Mass> listinha = new ArrayList<>();
-        Mass bolinha1 = new Mass(0.95, 4.0, -75.0, 0.0, 300d, 50d, "#5e25a8", 65d);
-        Mass bolinha2 = new Mass(0.95, 4.0, 56.0, 0.0, 450d, 100d, "#e6d410", 25d);
+        Mass bolinha1 = new Mass(0.95, 6.5, -50.0, 0.0, 300d, 300d, "#5e25a8", 25d);
+        Mass bolinha2 = new Mass(0.95, 6.5,  50.0, -9.0,300d, 190d, "#e6d410", 25d);
+        Mass bolinha3 = new Mass(0.95, 6.5,  30.0, 0.0,60d, 200d, "#387594", 25d);
 
         ArrayList<Spring> molinhas = new ArrayList<>();
 
         listinha.add(bolinha1);
         listinha.add(bolinha2);
+        listinha.add(bolinha3);
 
-        Spring molinha1 = new Spring(bolinha1, bolinha2, 2.0d, 300d);
+        Spring molinha1 = new Spring(bolinha1, bolinha2, 4.0d, 150d);
+        Spring molinha2 = new Spring(bolinha1, bolinha3, 4.0d, 150d);
         molinhas.add(molinha1);
+        molinhas.add(molinha2);
         
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                renderBall(listinha);
-                renderSpring(molinhas);
+
+                g.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                // renderSpring(molinhas);
+                // renderBall(listinha);
+
+                Square quadardo = new Square(4d, 100d, 6.5, 200d, 200d, "#252525");
+
+                renderSpring(quadardo.springs);
+                renderBall(quadardo.balls);
             }
             
-        }, 0, 33);
-        
+        }, 100, 31);
 
-    
     }
 }
 
