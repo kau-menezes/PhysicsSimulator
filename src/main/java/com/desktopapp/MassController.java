@@ -78,7 +78,29 @@ public class MassController implements Initializable {
             spring.mass2.xVelocity += forces.get(0) / spring.mass2.mass;
             spring.mass2.yVelocity += forces.get(1) / spring.mass2.mass;
                             
-                
+            var force = forces.get(2) / 200;
+
+            if (Math.abs(force) > 1) force = 1;
+
+            Color new_color = new Color
+            (Math.abs(force), 
+            0, 
+            0, 
+            1f);
+
+            Color new_color2 = new Color
+            (0, 
+            Math.abs(force), 
+            0, 
+            1f);
+
+            if (force < 0) {
+                g.setStroke(new_color2);
+
+            } else {
+                g.setStroke(new_color);
+            }
+
             g.strokeLine(
                 spring.mass1.xPosition + spring.mass1.diameter/2,
                 spring.mass1.yPosition + spring.mass1.diameter/2,
@@ -89,10 +111,7 @@ public class MassController implements Initializable {
         }
 
     }
-
-
      
-
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
 
@@ -102,30 +121,46 @@ public class MassController implements Initializable {
         Mass bolinha1 = new Mass(0.95, 6.5, -50.0, 0.0, 300d, 300d, "#5e25a8", 25d);
         Mass bolinha2 = new Mass(0.95, 6.5,  50.0, -9.0,300d, 190d, "#e6d410", 25d);
         Mass bolinha3 = new Mass(0.95, 6.5,  30.0, 0.0,60d, 200d, "#387594", 25d);
+        Mass bolinha4 = new Mass(0.95, 6.5,  -20.0, 0.0,60d, 250d, "#3164b5", 25d);
+        Mass bolinha5 = new Mass(0.95, 6.5,  -10.0, 0.0,60d, 220d, "#ad289e", 25d);
 
         ArrayList<Spring> molinhas = new ArrayList<>();
 
         listinha.add(bolinha1);
         listinha.add(bolinha2);
         listinha.add(bolinha3);
+        listinha.add(bolinha4);
+        listinha.add(bolinha5);
 
         Spring molinha1 = new Spring(bolinha1, bolinha2, 4.0d, 150d);
         Spring molinha2 = new Spring(bolinha1, bolinha3, 4.0d, 150d);
+        Spring molinha3 = new Spring(bolinha2, bolinha4, 4.0d, 150d);
+        Spring molinha4 = new Spring(bolinha5, bolinha1, 4.0d, 150d);
+        Spring molinha5 = new Spring(bolinha5, bolinha3, 4.0d, 150d);
+        Spring molinha6 = new Spring(bolinha5, bolinha4, 4.0d, 150d);
+        Spring molinha7 = new Spring(bolinha2, bolinha3, 4.0d, 150d);
+
         molinhas.add(molinha1);
         molinhas.add(molinha2);
+        molinhas.add(molinha3);
+        molinhas.add(molinha4);
+        molinhas.add(molinha5);
+        molinhas.add(molinha6);
+        molinhas.add(molinha7);
+
+        Square quadardo = new Square(4d, 100d, 6.5, 200d, 200d, "#252525");
         
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
 
                 g.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                // renderSpring(molinhas);
-                // renderBall(listinha);
-
-                Square quadardo = new Square(4d, 100d, 6.5, 200d, 200d, "#252525");
 
                 renderSpring(quadardo.springs);
                 renderBall(quadardo.balls);
+
+                // renderSpring(molinhas);
+                // renderBall(listinha);
             }
             
         }, 100, 31);

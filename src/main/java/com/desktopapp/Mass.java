@@ -42,9 +42,9 @@ public class Mass {
         this.yVelocity *= - k;
       }
       
-      if (this.yPosition <= 0) { 
+      if (this.yPosition < 0) { 
         
-        var passou = this.yPosition + (MaxHeight - this.diameter);
+        var passou = (this.yPosition - this.diameter) * -1 ;
         
         this.yPosition += passou;
         this.yVelocity *= - k;
